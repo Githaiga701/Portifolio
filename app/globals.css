@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f1eadf;
+  --foreground: #18130f;
+  --muted: #675f57;
+  --accent: #a71f1f;
+  --accent-soft: rgba(167, 31, 31, 0.12);
+  --ember: #c88a2d;
+  --panel: rgba(255, 251, 244, 0.78);
+  --panel-strong: rgba(255, 248, 237, 0.94);
+  --obsidian: #11100f;
+  --border: rgba(54, 44, 37, 0.18);
+  --font-inter: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-jetbrains-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(200, 138, 45, 0.2), transparent 26rem),
+    radial-gradient(circle at 82% 0%, rgba(167, 31, 31, 0.16), transparent 24rem),
+    linear-gradient(180deg, #f7efe4 0%, #eee4d7 42%, #f4ecdf 100%);
+  color: var(--foreground);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  content: "";
+  background-image:
+    linear-gradient(rgba(24, 19, 15, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(24, 19, 15, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+
+body::after {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+  background:
+    linear-gradient(115deg, transparent 0 48%, rgba(17, 16, 15, 0.04) 48% 49%, transparent 49% 100%),
+    radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.4), transparent 34rem);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--foreground);
+}
+
+.dragon-crest {
+  clip-path: polygon(50% 0, 91% 14%, 100% 52%, 72% 100%, 28% 100%, 0 52%, 9% 14%);
+}
+
+.wing-left {
+  clip-path: polygon(0 52%, 100% 0, 82% 88%);
+}
+
+.wing-right {
+  clip-path: polygon(100% 52%, 0 0, 18% 88%);
+}
+
+.ember-text {
+  background: linear-gradient(135deg, #11100f 0%, #a71f1f 52%, #c88a2d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-panel: var(--panel);
+  --color-panel-strong: var(--panel-strong);
+  --color-border-subtle: var(--border);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+}
