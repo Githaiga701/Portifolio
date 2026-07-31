@@ -1,16 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f1eadf;
-  --foreground: #18130f;
-  --muted: #675f57;
-  --accent: #a71f1f;
-  --accent-soft: rgba(167, 31, 31, 0.12);
-  --ember: #c88a2d;
-  --panel: rgba(255, 251, 244, 0.78);
-  --panel-strong: rgba(255, 248, 237, 0.94);
-  --obsidian: #11100f;
-  --border: rgba(54, 44, 37, 0.18);
+  --background: #fbfaf7;
+  --foreground: #101820;
+  --muted: #52616f;
+  --accent: #c54726;
+  --accent-soft: rgba(197, 71, 38, 0.12);
+  --panel: rgba(255, 255, 255, 0.78);
+  --panel-strong: rgba(255, 255, 255, 0.94);
+  --border: rgba(15, 23, 42, 0.16);
   --font-inter: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-jetbrains-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
@@ -27,11 +25,11 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
-    radial-gradient(circle at 18% 8%, rgba(200, 138, 45, 0.2), transparent 26rem),
-    radial-gradient(circle at 82% 0%, rgba(167, 31, 31, 0.16), transparent 24rem),
-    linear-gradient(180deg, #f7efe4 0%, #eee4d7 42%, #f4ecdf 100%);
+    linear-gradient(115deg, rgba(20, 184, 166, 0.08), transparent 34%),
+    linear-gradient(180deg, #fbfaf7 0%, #f5f8f6 48%, #f9f5ef 100%);
   color: var(--foreground);
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
 body::before {
@@ -40,10 +38,10 @@ body::before {
   z-index: -2;
   content: "";
   background-image:
-    linear-gradient(rgba(24, 19, 15, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(24, 19, 15, 0.05) 1px, transparent 1px);
-  background-size: 44px 44px;
-  mask-image: linear-gradient(to bottom, black, transparent 88%);
+    linear-gradient(rgba(15, 23, 42, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.045) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, black, transparent 86%);
 }
 
 body::after {
@@ -52,9 +50,7 @@ body::after {
   z-index: -1;
   pointer-events: none;
   content: "";
-  background:
-    linear-gradient(115deg, transparent 0 48%, rgba(17, 16, 15, 0.04) 48% 49%, transparent 49% 100%),
-    radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.4), transparent 34rem);
+  background: linear-gradient(115deg, transparent 0 48%, rgba(15, 23, 42, 0.035) 48% 49%, transparent 49% 100%);
 }
 
 a {
@@ -73,23 +69,22 @@ textarea {
   color: var(--foreground);
 }
 
-.dragon-crest {
-  clip-path: polygon(50% 0, 91% 14%, 100% 52%, 72% 100%, 28% 100%, 0 52%, 9% 14%);
-}
-
-.wing-left {
-  clip-path: polygon(0 52%, 100% 0, 82% 88%);
-}
-
-.wing-right {
-  clip-path: polygon(100% 52%, 0 0, 18% 88%);
-}
-
-.ember-text {
-  background: linear-gradient(135deg, #11100f 0%, #a71f1f 52%, #c88a2d 100%);
+.accent-text {
+  background: linear-gradient(135deg, #101820 0%, #c54726 54%, #0f766e 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
 @theme inline {

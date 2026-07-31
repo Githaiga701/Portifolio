@@ -5,6 +5,7 @@ export type FeaturedProject = {
   tagline?: string;
   problem?: string;
   role?: string;
+  outcome?: string;
   stack: string[];
   features: string[];
   challenges?: string;
@@ -27,13 +28,13 @@ export type Expertise = {
 
 export const profile = {
   name: "Githaiga",
-  role: "Full Stack Developer",
+  role: "Full Stack Developer and Systems Builder",
   tagline:
-    "I build web systems, secure workflows, operating-system tooling, and market-aware digital products with a strategist's eye.",
+    "I build fast web products, secure workflows, operating-system tooling, and market-aware digital systems with practical engineering judgment.",
   shortBio:
-    "Seasoned across full-stack engineering, Linux and Windows operations, cybersecurity fundamentals, academic problem-solving, and stocks and markets analysis.",
+    "Focused on Next.js, TypeScript, backend APIs, Linux and Windows operations, cybersecurity fundamentals, research workflows, and AI-assisted product delivery.",
   longBio:
-    "I work like a technical council: mapping the terrain, choosing the right stack, defending weak points, and shipping systems that can hold up in production. My range spans modern web applications, backend services, OS-level troubleshooting, security-minded implementation, research-heavy academic problems, and analytical thinking around markets.",
+    "I map the product goal, choose a maintainable stack, protect weak points, and ship interfaces that can be read by people, search engines, and modern AI agents. My range spans modern web applications, backend services, OS-level troubleshooting, security-minded implementation, research-heavy academic problems, and analytical thinking around markets.",
   email: "gitongsgideon701@gmail.com",
   github: "https://github.com/Githaiga701",
   linkedin: "",
@@ -43,52 +44,90 @@ export const profile = {
 };
 
 export const skills = {
-  frontend: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Framer Motion"],
-  backend: ["Node.js", "REST APIs", "Authentication", "Serverless Functions"],
+  frontend: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Accessibility", "Framer Motion"],
+  backend: ["Node.js", "REST APIs", "Authentication", "Serverless Functions", "API design"],
   systems: ["Linux", "Windows OS", "Shell workflows", "Troubleshooting", "Automation"],
-  security: ["Secure defaults", "Threat awareness", "Access control", "Web security"],
+  security: ["Secure defaults", "Threat modeling", "Access control", "Web security"],
   markets: ["Stocks", "Market structure", "Risk thinking", "Research workflows"],
   academic: ["Technical writing", "Research", "Problem decomposition", "Data reasoning"],
+  ai: ["AI-assisted development", "LLM workflows", "Prompt systems", "Agent-ready UX"],
   databases: ["PostgreSQL", "MySQL", "MongoDB", "Prisma"],
   devops: ["Vercel", "Git", "GitHub", "CI/CD", "Docker"],
 };
 
 export const expertise: Expertise[] = [
   {
-    title: "Full-Stack Systems",
-    houseTitle: "The Forge",
+    title: "Full-Stack Product Engineering",
+    houseTitle: "Product",
     description:
-      "Frontends, APIs, data models, authentication, and deployment paths shaped into usable products.",
+      "Frontends, APIs, data models, authentication, and deployment paths shaped into usable, maintainable products.",
     tools: ["Next.js", "TypeScript", "Node.js", "Databases"],
   },
   {
-    title: "Linux and Windows",
-    houseTitle: "The Twin Keeps",
+    title: "AI-Assisted Delivery",
+    houseTitle: "Workflow",
+    description:
+      "Practical use of AI tools for research, planning, code review, content iteration, and faster delivery without replacing engineering judgment.",
+    tools: ["LLM workflows", "Prompting", "Review", "Documentation"],
+  },
+  {
+    title: "Linux and Windows Operations",
+    houseTitle: "Systems",
     description:
       "Practical command-line fluency, desktop/server troubleshooting, automation, and cross-platform support.",
     tools: ["Linux", "Windows", "Shell", "Ops"],
   },
   {
-    title: "Cybersecurity",
-    houseTitle: "The Watch",
+    title: "Security-Minded Implementation",
+    houseTitle: "Risk",
     description:
       "Security-minded implementation, access boundaries, attack-surface awareness, and safer defaults.",
     tools: ["Web security", "Auth", "Hardening", "Risk"],
   },
   {
-    title: "Academic Problems",
-    houseTitle: "The Citadel",
+    title: "Research and Technical Reasoning",
+    houseTitle: "Analysis",
     description:
       "Research-heavy tasks, technical writing, structured reasoning, and breaking hard problems into solvable steps.",
     tools: ["Research", "Writing", "Analysis", "Data"],
   },
   {
-    title: "Stocks and Markets",
-    houseTitle: "The Ledger",
+    title: "Stocks and Market Analysis",
+    houseTitle: "Markets",
     description:
       "Market literacy, risk framing, structured analysis, and tools for tracking financial signals.",
     tools: ["Stocks", "Markets", "Risk", "Research"],
   },
+];
+
+export const trendSignals = [
+  {
+    label: "AI-ready products",
+    description:
+      "Interfaces and content structured for human users, search engines, and AI agents that need clear actions and context.",
+  },
+  {
+    label: "Accessible by default",
+    description:
+      "Semantic sections, readable contrast, keyboard-friendly controls, and reduced-motion support treated as baseline quality.",
+  },
+  {
+    label: "Performance-conscious builds",
+    description:
+      "Lean component structure, local data, optimized navigation, and restraint around decorative effects for faster loading.",
+  },
+  {
+    label: "Security and trust",
+    description:
+      "Security-aware implementation, safer defaults, careful link handling, and practical risk framing in product decisions.",
+  },
+];
+
+export const proofPoints = [
+  "Full-stack delivery",
+  "Cross-platform support",
+  "Security-aware builds",
+  "Research-heavy problem solving",
 ];
 
 export const featuredProjects: FeaturedProject[] = [
@@ -101,6 +140,8 @@ export const featuredProjects: FeaturedProject[] = [
     problem:
       "The business needed a credible digital storefront that helps visitors understand the offer quickly and move toward an inquiry without friction.",
     role: "Full-stack implementation, responsive UI, deployment, and content structure.",
+    outcome:
+      "Improved the first-visit path from destination discovery to direct inquiry with mobile-first sections and clearer calls to action.",
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "Vercel"],
     features: [
       "Responsive destination and package presentation",
@@ -119,6 +160,8 @@ export const featuredProjects: FeaturedProject[] = [
     problem:
       "The site needed to communicate technical capability quickly while staying simple enough for visitors to act.",
     role: "Frontend architecture, section design, responsive build, and deployment setup.",
+    outcome:
+      "Created a sharper agency presence with reusable service sections, focused navigation, and faster publishing paths.",
     stack: ["React", "Next.js", "Tailwind CSS", "Vercel"],
     features: [
       "Service-focused landing sections",
@@ -132,10 +175,10 @@ export const featuredProjects: FeaturedProject[] = [
 
 export const otherProjects: OtherProject[] = [
   {
-    name: "Linux Command Workbench",
+    name: "Systems Automation Workbench",
     description:
-      "A practical toolkit concept for shell workflows, system checks, and repeatable admin routines.",
-    tech: ["Linux", "Shell", "Automation"],
+      "A practical toolkit concept for shell workflows, system checks, Windows support notes, and repeatable admin routines.",
+    tech: ["Linux", "Windows", "Shell", "Automation"],
     github: "https://github.com/Githaiga701",
   },
   {
@@ -146,10 +189,17 @@ export const otherProjects: OtherProject[] = [
     github: "https://github.com/Githaiga701",
   },
   {
-    name: "Market Signals Tracker",
+    name: "Market Signals Dashboard",
     description:
-      "A research-oriented concept for watching stocks, market themes, and risk notes in one place.",
-    tech: ["Markets", "Research", "Dashboards"],
+      "A research-oriented dashboard concept for watching stocks, market themes, risk notes, and decision context in one place.",
+    tech: ["Markets", "Research", "Dashboards", "Data"],
+    github: "https://github.com/Githaiga701",
+  },
+  {
+    name: "AI Research Assistant",
+    description:
+      "A concept for turning messy academic or technical questions into structured briefs, citations, and implementation steps.",
+    tech: ["AI workflows", "Research", "TypeScript"],
     github: "https://github.com/Githaiga701",
   },
 ];
