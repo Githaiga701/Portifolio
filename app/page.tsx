@@ -11,6 +11,8 @@ import {
   Database,
   ExternalLink,
   Flame,
+  Heart,
+  LoaderCircle,
   Mail,
   Menu,
   MonitorCog,
@@ -36,6 +38,7 @@ const navItems = [
   { label: "Capabilities", href: "#skills" },
   { label: "Work", href: "#projects" },
   { label: "Direction", href: "#direction" },
+  { label: "Tip", href: "#tip" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -663,6 +666,121 @@ function Contact() {
   );
 }
 
+function Tip() {
+  const [amount, setAmount] = useState("100");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [status, setStatus] = useState<{ type: "error" | "success"; message: string } | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function submitTip(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setStatus(null);
+
+    try {
+      const response = await fetch("/api/mpesa/stk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount, phoneNumber }),
+      });
+      const payload = (await response.json()) as { error?: string; message?: string };
+
+      if (!response.ok) {
+        throw new Error(payload.error || "Unable to start the M-Pesa prompt.");
+      }
+
+      setStatus({
+        type: "success",
+        message: payload.message || "Check your phone and enter your M-Pesa PIN to complete the tip.",
+      });
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message: error instanceof Error ? error.message : "Unable to start the M-Pesa prompt.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  return (
+    <section id="tip" className="bg-[#edf5f0] px-5 py-24">
+      <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+        <motion.div {...fadeIn}>
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-accent">Support the work</p>
+          <h2 className="text-balance text-3xl font-semibold text-slate-950 sm:text-4xl">Leave a tip through M-Pesa.</h2>
+          <p className="mt-4 max-w-xl text-base leading-7 text-slate-700">
+            Enter an amount and the M-Pesa number that should receive the prompt. The payment is authorized on your phone; this site never sees your PIN.
+          </p>
+          <div className="mt-7 flex items-center gap-3 text-sm font-semibold text-slate-700">
+            <ShieldCheck className="text-emerald-700" size={20} />
+            Secure STK Push via Safaricom Daraja
+          </div>
+        </motion.div>
+
+        <motion.form
+          {...fadeIn}
+          onSubmit={submitTip}
+          className="rounded-lg border border-slate-950/12 bg-white p-6 shadow-xl shadow-slate-950/10 sm:p-8"
+        >
+          <div className="grid gap-5 sm:grid-cols-2">
+            <label className="grid gap-2 text-sm font-semibold text-slate-800">
+              Tip amount (KES)
+              <input
+                type="number"
+                inputMode="numeric"
+                min="1"
+                max="150000"
+                step="1"
+                required
+                value={amount}
+                onChange={(event) => setAmount(event.target.value)}
+                className="min-h-12 rounded-md border border-slate-950/15 bg-white px-3 text-slate-950 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25"
+              />
+            </label>
+            <label className="grid gap-2 text-sm font-semibold text-slate-800">
+              M-Pesa number
+              <input
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                placeholder="0712 345 678"
+                required
+                value={phoneNumber}
+                onChange={(event) => setPhoneNumber(event.target.value)}
+                className="min-h-12 rounded-md border border-slate-950/15 bg-white px-3 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-accent focus:ring-2 focus:ring-accent/25"
+              />
+            </label>
+          </div>
+
+          {status ? (
+            <p
+              className={`mt-5 rounded-md border px-4 py-3 text-sm leading-6 ${
+                status.type === "success"
+                  ? "border-emerald-700/20 bg-emerald-50 text-emerald-950"
+                  : "border-red-700/20 bg-red-50 text-red-900"
+              }`}
+              role="status"
+            >
+              {status.message}
+            </p>
+          ) : null}
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-65"
+          >
+            {isSubmitting ? <LoaderCircle className="animate-spin" size={17} /> : <Heart size={17} />}
+            {isSubmitting ? "Starting M-Pesa prompt..." : "Tip with M-Pesa"}
+          </button>
+          <p className="mt-4 text-xs leading-5 text-slate-500">Minimum KES 1. You will confirm the payment on your phone.</p>
+        </motion.form>
+      </div>
+    </section>
+  );
+}
+
 function Footer() {
   return (
     <footer className="border-t border-slate-950/10 px-5 py-8">
@@ -722,6 +840,7 @@ export default function Home() {
         <SkillsSection />
         <Projects />
         <Direction />
+        <Tip />
         <Contact />
         <Footer />
       </main>
