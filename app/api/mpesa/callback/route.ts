@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ResultCode: 1, ResultDesc: "Invalid callback payload" }, { status: 400 });
   }
 
-  // Add a database write here when tips need receipts or a public supporter feed.
+  // Add a database write here when support needs receipts or a public supporter feed.
   console.info("M-Pesa callback received", {
     checkoutRequestId: callback.CheckoutRequestID,
     resultCode: callback.ResultCode,

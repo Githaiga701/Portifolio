@@ -21,13 +21,13 @@ npm run build
 
 The project is designed for Vercel and does not require environment variables for the base version.
 
-## M-Pesa Tips
+## M-Pesa Support
 
 The portfolio includes a server-side Safaricom Daraja M-Pesa Express (STK Push) integration. Copy `.env.example` to `.env.local` and set the Daraja credentials from your app. Keep these values server-only; do not use `NEXT_PUBLIC_` prefixes.
 
 Use `MPESA_ENVIRONMENT=sandbox` with a sandbox application while testing. For live payments, use `MPESA_ENVIRONMENT=production`, the approved live shortcode or Till Number, the matching passkey, and an internet-reachable HTTPS `MPESA_CALLBACK_URL` such as `https://githaiga.vercel.app/api/mpesa/callback`.
 
-The callback endpoint accepts Daraja completion notifications and logs their outcome. Connect it to a database before offering receipts, supporter history, or fulfillment. The tip form will explicitly say it is unconfigured until the required environment variables are present.
+The callback endpoint accepts Daraja completion notifications and logs their outcome. Connect it to a database before offering receipts, supporter history, or fulfillment. The support form will explicitly say it is unconfigured until the required environment variables are present.
 
 ## Quality Checks
 

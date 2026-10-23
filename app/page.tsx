@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, MouseEvent, ReactNode } from "react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -32,13 +32,14 @@ import {
   type FeaturedProject,
   type OtherProject,
 } from "@/lib/data";
+import { heroReveal, motionTokens, reveal } from "@/lib/motion";
 
 const navItems = [
   { label: "About", href: "#about" },
   { label: "Capabilities", href: "#skills" },
   { label: "Work", href: "#projects" },
   { label: "Direction", href: "#direction" },
-  { label: "Tip", href: "#tip" },
+  { label: "Support", href: "#support" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -53,15 +54,41 @@ const skillGroups = [
   { title: "Data and DevOps", context: "Ship and maintain", icon: Database, items: [...skills.databases, ...skills.devops] },
 ].filter((group) => group.items.some(Boolean));
 
-const fadeIn = {
-  initial: { opacity: 0, y: 16 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-72px" },
-  transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const },
-} as const;
-
 function hasValue(value?: string) {
   return Boolean(value?.trim());
+}
+
+function SpotlightCard({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const [position, setPosition] = useState({ x: "50%", y: "50%" });
+
+  function updateSpotlight(event: MouseEvent<HTMLDivElement>) {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    setPosition({
+      x: `${event.clientX - bounds.left}px`,
+      y: `${event.clientY - bounds.top}px`,
+    });
+  }
+
+  return (
+    <motion.div
+      {...reveal(delay)}
+      className={`card-spotlight group ${className}`}
+      style={{ "--spotlight-x": position.x, "--spotlight-y": position.y } as CSSProperties}
+      onPointerMove={updateSpotlight}
+      whileHover={{ y: -5, transition: motionTokens.spring }}
+      whileTap={{ y: -1, scale: 0.995, transition: motionTokens.spring }}
+    >
+      <div className="card-surface h-full rounded-lg">{children}</div>
+    </motion.div>
+  );
 }
 
 function externalProps(url?: string) {
@@ -86,7 +113,7 @@ function SectionHeading({
   inverse?: boolean;
 }) {
   return (
-    <motion.div {...fadeIn} className="mb-9 max-w-3xl">
+    <motion.div {...reveal()} className="mb-11 max-w-3xl">
       <p className={`mb-3 text-xs font-bold uppercase tracking-[0.18em] ${inverse ? "text-cyan-200" : "text-accent"}`}>
         {eyebrow}
       </p>
@@ -98,6 +125,7 @@ function SectionHeading({
           {copy}
         </p>
       ) : null}
+      <div className="section-rule" aria-hidden="true" />
     </motion.div>
   );
 }
@@ -120,7 +148,7 @@ function LinkButton({
   };
 
   return (
-    <a href={href} className={`${base} ${styles[variant]}`}>
+    <a href={href} className={`${base} button-tactile ${styles[variant]}`}>
       {children}
     </a>
   );
@@ -155,7 +183,7 @@ function Nav() {
             <a
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-slate-700 transition hover:text-accent"
+              className="nav-link text-sm font-medium text-slate-700 transition hover:text-accent"
             >
               {item.label}
             </a>
@@ -181,7 +209,7 @@ function Nav() {
               <a
                 key={item.href}
                 href={item.href}
-                className="rounded-md px-2 py-3 text-sm font-medium text-slate-800 hover:bg-white hover:text-accent"
+                className="nav-link w-fit rounded-md px-2 py-3 text-sm font-medium text-slate-800 hover:bg-white hover:text-accent"
                 onClick={() => setOpen(false)}
               >
                 {item.label}
@@ -204,13 +232,11 @@ function SystemsPanel() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.97 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.55, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="relative"
+      {...heroReveal(motionTokens.stagger, 14)}
+      className="relative lg:translate-y-7"
       aria-label="Portfolio capability summary"
     >
-      <div className="overflow-hidden rounded-lg border border-slate-950/12 bg-slate-950 text-white shadow-2xl shadow-slate-950/20">
+      <div className="overflow-hidden rounded-lg border border-slate-950/12 bg-slate-950 text-white shadow-2xl shadow-slate-950/20 ring-1 ring-white/10">
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">Operating view</p>
@@ -223,7 +249,7 @@ function SystemsPanel() {
         <div className="grid min-h-[31rem] content-between gap-6 p-5 sm:p-6">
           <div className="grid gap-3">
             {panelRows.map(([label, value]) => (
-              <div key={label} className="rounded-md border border-white/10 bg-white/[0.055] p-4">
+              <div key={label} className="rounded-md border border-white/10 bg-white/[0.055] p-4 transition-transform duration-300 hover:translate-x-1">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-cyan-200">{label}</p>
                 <p className="mt-2 text-sm leading-6 text-slate-200">{value}</p>
               </div>
@@ -246,9 +272,7 @@ function Hero() {
     <section id="top" className="relative isolate overflow-hidden px-5 pb-16 pt-28">
       <div className="mx-auto grid min-h-[calc(100vh-7rem)] w-full max-w-6xl gap-12 lg:grid-cols-[1.04fr_0.96fr] lg:items-center">
         <motion.div
-          initial={{ opacity: 0, y: 22 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          {...heroReveal()}
         >
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-accent/25 bg-white/78 px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-accent shadow-sm">
             <Flame size={14} />
@@ -286,14 +310,15 @@ function Hero() {
             ) : null}
           </div>
 
-          <div className="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {proofPoints.map((item) => (
-              <div
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {proofPoints.map((item, index) => (
+              <motion.div
                 key={item}
-                className="rounded-md border border-slate-950/10 bg-white/72 px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm"
+                {...heroReveal(0.22 + index * motionTokens.stagger, 10)}
+                className="border-l-2 border-l-accent bg-white/72 px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm"
               >
                 {item}
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
@@ -313,30 +338,30 @@ function About() {
           title="A practical builder across product, systems, security, and analysis."
           copy={profile.longBio}
         />
-        <motion.div {...fadeIn} className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {expertise.map((item) => (
-            <article
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {expertise.map((item, index) => (
+            <SpotlightCard
               key={item.title}
-              className="rounded-lg border border-slate-950/12 bg-panel p-5 shadow-sm transition hover:-translate-y-1 hover:border-accent/40 hover:bg-panel-strong"
+              delay={index * motionTokens.stagger}
+              className={index === 0 ? "md:col-span-2 xl:col-span-1" : ""}
             >
-              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-accent">
-                {item.houseTitle}
-              </p>
-              <h3 className="text-lg font-semibold text-slate-950">{item.title}</h3>
-              <p className="mt-3 text-sm leading-6 text-slate-700">{item.description}</p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {item.tools.map((tool) => (
-                  <span
-                    key={tool}
-                    className="rounded-full border border-slate-950/10 bg-white/70 px-2.5 py-1 text-[11px] font-semibold text-slate-700"
-                  >
-                    {tool}
-                  </span>
-                ))}
-              </div>
-            </article>
+              <article className="flex h-full flex-col p-6">
+                <p className="mb-5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-accent">
+                  {item.houseTitle}
+                </p>
+                <h3 className="text-xl font-semibold text-slate-950">{item.title}</h3>
+                <p className="mt-3 flex-1 text-sm leading-6 text-slate-700">{item.description}</p>
+                <div className="mt-7 flex flex-wrap gap-2 border-t border-slate-950/10 pt-4">
+                  {item.tools.map((tool) => (
+                    <span key={tool} className="rounded-full border border-slate-950/10 bg-white/70 px-2.5 py-1 text-[11px] font-semibold text-slate-700">
+                      {tool}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            </SpotlightCard>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -357,34 +382,31 @@ function SkillsSection() {
           inverse
         />
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {skillGroups.map(({ title, context, icon: Icon, items }) => (
-            <motion.article
+          {skillGroups.map(({ title, context, icon: Icon, items }, index) => (
+            <SpotlightCard
               key={title}
-              {...fadeIn}
-              className="rounded-lg border border-white/10 bg-white/[0.055] p-5 transition hover:border-cyan-200/50 hover:bg-white/[0.085]"
+              delay={index * motionTokens.stagger}
+              className={index === 0 ? "md:col-span-2 xl:col-span-2" : ""}
             >
-              <div className="mb-5 flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-md bg-cyan-200/12 text-cyan-200">
-                  <Icon size={20} />
-                </span>
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-cyan-200">
-                    {context}
-                  </p>
-                  <h3 className="font-semibold text-white">{title}</h3>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {items.filter(Boolean).map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-xs font-semibold text-slate-200"
-                  >
-                    {item}
+              <article className="h-full bg-slate-950 p-5 text-white">
+                <div className="mb-6 flex items-center gap-3">
+                  <span className="grid h-10 w-10 place-items-center rounded-md bg-cyan-200/12 text-cyan-200">
+                    <Icon size={20} />
                   </span>
-                ))}
-              </div>
-            </motion.article>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-cyan-200">{context}</p>
+                    <h3 className="font-semibold text-white">{title}</h3>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {items.filter(Boolean).map((item) => (
+                    <span key={item} className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-xs font-semibold text-slate-200">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            </SpotlightCard>
           ))}
         </div>
       </div>
@@ -399,22 +421,21 @@ function FeaturedProjectCard({ project, index }: { project: FeaturedProject; ind
   ].filter((link) => hasValue(link.href));
 
   return (
-    <motion.article
-      {...fadeIn}
-      transition={{ duration: 0.45, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
-      className="group overflow-hidden rounded-lg border border-slate-950/12 bg-panel shadow-sm transition hover:-translate-y-1 hover:border-accent/45 hover:bg-panel-strong hover:shadow-xl hover:shadow-slate-950/10"
-    >
-      <div className="grid lg:grid-cols-[0.78fr_1.22fr]">
-        <div className="bg-slate-950 p-6 text-white">
+    <SpotlightCard delay={index * motionTokens.stagger}>
+      <article className="overflow-hidden">
+      <div className="grid lg:grid-cols-[0.72fr_1.28fr]">
+        <div className="project-visual flex min-h-64 flex-col justify-between bg-slate-950 p-6 text-white sm:p-8">
+          <div className="relative z-10">
           <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-cyan-200">
             Project {String(index + 1).padStart(2, "0")}
           </p>
-          <h3 className="text-2xl font-semibold">{project.name}</h3>
+          <h3 className="max-w-sm text-2xl font-semibold sm:text-3xl">{project.name}</h3>
           {hasValue(project.tagline) ? (
             <p className="mt-4 text-sm leading-6 text-slate-300">{project.tagline}</p>
           ) : null}
+          </div>
           {project.stack.filter(Boolean).length ? (
-            <div className="mt-7 flex flex-wrap gap-2">
+            <div className="relative z-10 mt-7 flex flex-wrap gap-2">
               {project.stack.filter(Boolean).map((item) => (
                 <span
                   key={item}
@@ -427,7 +448,7 @@ function FeaturedProjectCard({ project, index }: { project: FeaturedProject; ind
           ) : null}
         </div>
 
-        <div className="p-5 sm:p-7">
+        <div className="bg-white/40 p-5 sm:p-7">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="grid gap-5 lg:grid-cols-2">
               {hasValue(project.problem) ? (
@@ -453,9 +474,9 @@ function FeaturedProjectCard({ project, index }: { project: FeaturedProject; ind
                   <a
                     key={label}
                     {...externalProps(href)}
-                    className="inline-flex min-h-10 items-center gap-2 rounded-md border border-slate-950/12 bg-white/70 px-3 text-sm font-medium text-slate-800 transition hover:border-accent/70 hover:text-accent"
+                    className="button-tactile inline-flex min-h-10 items-center gap-2 rounded-md border border-slate-950/12 bg-white/70 px-3 text-sm font-medium text-slate-800 hover:border-accent/70 hover:text-accent"
                   >
-                    {label} <Icon size={16} />
+                    {label} <Icon className="card-arrow" size={16} />
                   </a>
                 ))}
               </div>
@@ -494,7 +515,8 @@ function FeaturedProjectCard({ project, index }: { project: FeaturedProject; ind
           ) : null}
         </div>
       </div>
-    </motion.article>
+      </article>
+    </SpotlightCard>
   );
 }
 
@@ -505,11 +527,12 @@ function OtherProjectCard({ project }: { project: OtherProject }) {
   ].filter((link) => hasValue(link.href));
 
   return (
-    <motion.article
-      {...fadeIn}
-      className="flex min-h-64 flex-col rounded-lg border border-slate-950/12 bg-panel p-5 shadow-sm transition hover:-translate-y-1 hover:border-accent/45 hover:bg-panel-strong"
-    >
-      <TerminalSquare className="mb-6 text-accent" size={24} />
+    <SpotlightCard>
+      <article className="flex min-h-64 flex-col p-5">
+      <div className="mb-6 flex items-center justify-between">
+        <TerminalSquare className="text-accent" size={24} />
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Explore</span>
+      </div>
       <h3 className="text-lg font-semibold text-slate-950">{project.name}</h3>
       {hasValue(project.description) ? (
         <p className="mt-3 flex-1 text-sm leading-6 text-slate-700">{project.description}</p>
@@ -534,14 +557,15 @@ function OtherProjectCard({ project }: { project: OtherProject }) {
             <a
               key={label}
               {...externalProps(href)}
-              className="inline-flex min-h-9 items-center gap-2 rounded-md border border-slate-950/12 bg-white/70 px-3 text-xs font-medium text-slate-800 transition hover:border-accent/70 hover:text-accent"
+              className="button-tactile inline-flex min-h-9 items-center gap-2 rounded-md border border-slate-950/12 bg-white/70 px-3 text-xs font-medium text-slate-800 hover:border-accent/70 hover:text-accent"
             >
-              {label} <Icon size={14} />
+              {label} <Icon className="card-arrow" size={14} />
             </a>
           ))}
         </div>
       ) : null}
-    </motion.article>
+      </article>
+    </SpotlightCard>
   );
 }
 
@@ -594,15 +618,18 @@ function Direction() {
           copy="The portfolio now emphasizes the durable parts of current web trends: accessibility, sustainable performance, AI-readable information architecture, and security-minded product decisions."
         />
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {trendSignals.map((item) => (
-            <motion.article
+          {trendSignals.map((item, index) => (
+            <SpotlightCard
               key={item.label}
-              {...fadeIn}
-              className="rounded-lg border border-slate-950/12 bg-white/72 p-5 shadow-sm"
+              delay={index * motionTokens.stagger}
+              className={index === 0 ? "xl:col-span-2" : ""}
             >
-              <h3 className="text-base font-semibold text-slate-950">{item.label}</h3>
-              <p className="mt-3 text-sm leading-6 text-slate-700">{item.description}</p>
-            </motion.article>
+              <article className="h-full p-6">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-accent">Signal {String(index + 1).padStart(2, "0")}</p>
+                <h3 className="mt-5 text-lg font-semibold text-slate-950">{item.label}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-700">{item.description}</p>
+              </article>
+            </SpotlightCard>
           ))}
         </div>
       </div>
@@ -624,7 +651,7 @@ function Contact() {
   return (
     <section id="contact" className="border-t border-slate-950/10 px-5 py-24">
       <motion.div
-        {...fadeIn}
+        {...reveal()}
         className="mx-auto max-w-6xl overflow-hidden rounded-lg border border-slate-950/12 bg-slate-950 text-white shadow-2xl shadow-slate-950/20"
       >
         <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
@@ -645,7 +672,7 @@ function Contact() {
                 <a
                   key={label}
                   href={href}
-                  className="inline-flex min-h-12 items-center justify-between gap-3 rounded-md border border-white/10 bg-black/20 px-4 text-sm font-medium text-slate-100 transition hover:border-cyan-200/70 hover:bg-cyan-200/10"
+                  className="button-tactile inline-flex min-h-12 items-center justify-between gap-3 rounded-md border border-white/10 bg-black/20 px-4 text-sm font-medium text-slate-100 hover:border-cyan-200/70 hover:bg-cyan-200/10"
                   target={href.startsWith("http") ? "_blank" : undefined}
                   rel={href.startsWith("http") ? "noreferrer" : undefined}
                 >
@@ -653,7 +680,7 @@ function Contact() {
                     <Icon size={17} />
                     {label}
                   </span>
-                  <ArrowUpRight size={15} />
+                  <ArrowUpRight className="card-arrow" size={15} />
                 </a>
               ))
             ) : (
@@ -666,13 +693,13 @@ function Contact() {
   );
 }
 
-function Tip() {
+function Support() {
   const [amount, setAmount] = useState("100");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [status, setStatus] = useState<{ type: "error" | "success"; message: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function submitTip(event: React.FormEvent<HTMLFormElement>) {
+  async function submitSupport(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsSubmitting(true);
     setStatus(null);
@@ -691,7 +718,7 @@ function Tip() {
 
       setStatus({
         type: "success",
-        message: payload.message || "Check your phone and enter your M-Pesa PIN to complete the tip.",
+        message: payload.message || "Check your phone and enter your M-Pesa PIN to complete your support.",
       });
     } catch (error) {
       setStatus({
@@ -704,11 +731,11 @@ function Tip() {
   }
 
   return (
-    <section id="tip" className="bg-[#edf5f0] px-5 py-24">
+    <section id="support" className="bg-[#edf5f0] px-5 py-24">
       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-        <motion.div {...fadeIn}>
+        <motion.div {...reveal()}>
           <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-accent">Support the work</p>
-          <h2 className="text-balance text-3xl font-semibold text-slate-950 sm:text-4xl">Leave a tip through M-Pesa.</h2>
+          <h2 className="text-balance text-3xl font-semibold text-slate-950 sm:text-4xl">Support through M-Pesa.</h2>
           <p className="mt-4 max-w-xl text-base leading-7 text-slate-700">
             Enter an amount and the M-Pesa number that should receive the prompt. The payment is authorized on your phone; this site never sees your PIN.
           </p>
@@ -719,13 +746,13 @@ function Tip() {
         </motion.div>
 
         <motion.form
-          {...fadeIn}
-          onSubmit={submitTip}
-          className="rounded-lg border border-slate-950/12 bg-white p-6 shadow-xl shadow-slate-950/10 sm:p-8"
+          {...reveal(motionTokens.stagger)}
+          onSubmit={submitSupport}
+          className="card-surface card-spotlight rounded-lg bg-white p-6 shadow-xl shadow-slate-950/10 sm:p-8"
         >
           <div className="grid gap-5 sm:grid-cols-2">
             <label className="grid gap-2 text-sm font-semibold text-slate-800">
-              Tip amount (KES)
+              Support amount (KES)
               <input
                 type="number"
                 inputMode="numeric"
@@ -769,10 +796,10 @@ function Tip() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-65"
+            className="button-tactile mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-slate-950 px-5 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-65"
           >
             {isSubmitting ? <LoaderCircle className="animate-spin" size={17} /> : <Heart size={17} />}
-            {isSubmitting ? "Starting M-Pesa prompt..." : "Tip with M-Pesa"}
+            {isSubmitting ? "Starting M-Pesa prompt..." : "Support with M-Pesa"}
           </button>
           <p className="mt-4 text-xs leading-5 text-slate-500">Minimum KES 1. You will confirm the payment on your phone.</p>
         </motion.form>
@@ -840,7 +867,7 @@ export default function Home() {
         <SkillsSection />
         <Projects />
         <Direction />
-        <Tip />
+        <Support />
         <Contact />
         <Footer />
       </main>

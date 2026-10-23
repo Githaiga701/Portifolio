@@ -3,8 +3,8 @@ import { getDarajaConfig, initiateStkPush, normalizeKenyanPhoneNumber } from "@/
 
 export const runtime = "nodejs";
 
-const minimumTipAmount = 1;
-const maximumTipAmount = 150000;
+const minimumSupportAmount = 1;
+const maximumSupportAmount = 150000;
 const attempts = new Map<string, { count: number; resetAt: number }>();
 
 function rateLimit(request: NextRequest) {
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
   const config = getDarajaConfig();
   if (!config) {
     return NextResponse.json(
-      { error: "M-Pesa tips are not configured yet. Please contact the site owner." },
+      { error: "M-Pesa support is not configured yet. Please contact the site owner." },
       { status: 503 },
     );
   }
@@ -43,15 +43,15 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Please enter a valid tip request." }, { status: 400 });
+    return NextResponse.json({ error: "Please enter a valid support request." }, { status: 400 });
   }
 
   const amount = Number(body.amount);
   const phoneNumber = typeof body.phoneNumber === "string" ? normalizeKenyanPhoneNumber(body.phoneNumber) : null;
 
-  if (!Number.isInteger(amount) || amount < minimumTipAmount || amount > maximumTipAmount) {
+  if (!Number.isInteger(amount) || amount < minimumSupportAmount || amount > maximumSupportAmount) {
     return NextResponse.json(
-      { error: `Enter a whole amount between KES ${minimumTipAmount} and KES ${maximumTipAmount.toLocaleString("en-KE")}.` },
+      { error: `Enter a whole amount between KES ${minimumSupportAmount} and KES ${maximumSupportAmount.toLocaleString("en-KE")}.` },
       { status: 400 },
     );
   }
@@ -64,8 +64,8 @@ export async function POST(request: NextRequest) {
     const result = await initiateStkPush(config, {
       amount,
       phoneNumber,
-      accountReference: "Githaiga Tip",
-      transactionDesc: "Portfolio tip",
+      accountReference: "Githaiga Support",
+      transactionDesc: "Portfolio support",
     });
 
     return NextResponse.json({ message: result.customerMessage, checkoutRequestId: result.checkoutRequestId });
